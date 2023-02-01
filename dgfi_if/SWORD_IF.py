@@ -8,15 +8,15 @@ import h5py
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-import contextily as cx
+# import contextily as cx
 from osgeo import ogr
 import fiona, fiona.crs
 from . import Utilities, Conversions
-from .MVA_IF import MVAException
+# from .MVA_IF import MVAException
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR, LinearSVR
-from OpenADB.Tools import spherical_distance
-from OpenADB.Time import julianDayDate
+# from OpenADB.Tools import spherical_distance
+# from OpenADB.Time import julianDayDate
 import datetime
 import pickle
 
@@ -28,11 +28,11 @@ from tqdm.auto import tqdm
 from scipy import stats
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib_scalebar.scalebar import ScaleBar
+# from matplotlib_scalebar.scalebar import ScaleBar
 import warnings
 from copy import deepcopy
 
-import tum_design as tum
+# import tum_design as tum
 
 class SWORDException(Exception):
     """:meta private:"""
@@ -876,11 +876,11 @@ class SWORD_Reach(SWORD_IF):
         lon = [self.dset['nodes']['x'][i] for i in nodes_indexes]
         lat = [self.dset['nodes']['y'][i] for i in nodes_indexes]
         df = pd.DataFrame({'lon': lon, 'lat':lat}, index = nodes_indexes).sort_index()
-        closest_node_index = df.apply(lambda x: spherical_distance(poi_lon,poi_lat,x.lon,x.lat),axis=1).idxmin()
+        closest_node_index = df.apply(lambda x: Utilities.spherical_distance(poi_lon,poi_lat,x.lon,x.lat),axis=1).idxmin()
         df.loc[:,'last_lon'] = [np.nan] + list(lon[:-1])
         df.loc[:,'last_lat'] = [np.nan] + list(lat[:-1]) 
         # spherical_distance returns distance in km!
-        df.loc[:,'distance'] = df.apply(lambda x: spherical_distance(x.lon,x.lat,x.last_lon,x.last_lat) * 1000,axis=1)
+        df.loc[:,'distance'] = df.apply(lambda x: Utilities.spherical_distance(x.lon,x.lat,x.last_lon,x.last_lat) * 1000,axis=1)
         df.distance.iloc[0] = 0
         position = df.loc[0:closest_node_index,'distance'].sum()
         self.close_dset()

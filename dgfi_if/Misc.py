@@ -18,7 +18,7 @@ import pyproj
 import math
 from shapely.ops import transform, split
 from shapely.geometry import Point, LineString, MultiLineString
-import tum_design as tum
+# import tum_design as tum
 
 class MiscException(Exception):
     """:meta private:"""
@@ -50,7 +50,7 @@ def get_pfaff4_basins():
     gdf.set_crs(epsg=4326, inplace=True, allow_override=True)
     return gdf
 
-PFAFF_6_GDF = get_pfaff6_basins()
+# PFAFF_6_GDF = get_pfaff6_basins()
 
 def get_pfaff_code(lon : float, lat : float, level : int = 2, max_dist : float = 10000, raise_exception : bool = True) -> int:
     """
@@ -247,3 +247,21 @@ def icesat2_along_get_conf_threshold_by_angle(angle,max_confidence,max_angle):
         return max_confidence-(max_confidence/max_angle)*angle
     else:
         return 0
+
+def openadb_spherical_distance(lon1, lat1, lon2, lat2, ellipsoid='wgs84'):
+		
+    ' mean equator radius '
+    ellipsoids = {}
+    ellipsoids['wgs84'] = 6378.1370	
+    ellipsoids['grs80'] = 6378.1370
+    ellipsoids['topex'] = 6378.1363
+
+    R = ellipsoids[ellipsoid];
+    dLat = math.radians(lat2-lat1);
+    dLon = math.radians(lon2-lon1);
+    a = math.sin(dLat/2) * math.sin(dLat/2) +math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dLon/2) * math.sin(dLon/2); 
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a)); 
+    d = R * c;
+
+    # distance in km!"
+    return d

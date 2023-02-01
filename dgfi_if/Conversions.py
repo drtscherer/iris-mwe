@@ -7,7 +7,7 @@ import pyproj
 import math
 from shapely.ops import transform
 from datetime import datetime, timedelta
-
+import calendar
 
 JDAY2000_EPOCHE = datetime(2000,1,1)
 
@@ -47,3 +47,85 @@ def convert_jday_to_datetime(jday, epoche):
 
 def convert_jseconds_to_datetime(jseconds, epoche):
     return epoche + timedelta(seconds=jseconds)
+
+def julianDayDate(jd2000):
+    """Function for the conversion from Julian Day 2000 to date
+
+    @param jd2000 (float) - Julian Day 2000
+    @return object - Date object
+        
+    """    
+
+    cumday = [0,31,59,90,120,151,181,212,243,273,304,334,365];
+    t = jd2000 + 0.5
+    ' tmp is created because of float uncertainties '
+    #~ print (t,int(t))
+    tmp = float('%.8f' % ((t -int(t))))
+    sec = tmp*86400.
+
+    if int(sec) == 86400: # fix because of rounding when jday == 1000.499999999993
+        sec = 0
+        t += 1
+
+    #~ print (sec)
+    #	print t,sec 
+    if sec < 0.:
+        sec = sec + 86400.
+    if t >= 0.:
+        n4 = int(t/1461)
+    else:
+        n4 = int(t/1461) - 1
+    #	print n4,sec,t
+    if t >= 0.:
+        it = 1
+    else:
+        it = 0
+    it = it + int(t) - n4*1461;
+    #	print it
+    if it == 60:
+        day = 29
+        m = 2
+        year = 2000 + 4*n4
+    else:
+        if it > 60:
+            it = it -1
+        n1 = int((it -1) /365)
+        it = it -n1*365
+    #	print n1,it
+        m = int((it -1)/31)
+        while it > cumday[m]:
+            m = m + 1
+        day = it - cumday[m - 1]
+    #	print n4,n1
+        year = 2000 + 4*n4 +n1
+    hour = int(sec/3600)
+    sec = sec - hour*3600
+    minute = int(sec/60)	
+    sec = sec - minute*60	
+    month = m
+
+        
+    if calendar.isleap(year):		
+        days = 0
+        cumday = [0,31,60,91,121,152,182,213,244,274,305,335,366];
+        days =  cumday[month-1]
+        days = days + day - 1
+        dezDate = (days*24*60*60+hour*60*60+minute*60+sec)/(366*24*60*60)+year
+    else:		
+        days = 0
+        cumday = [0,31,59,90,120,151,181,212,243,273,304,334,365];
+        days =  cumday[month-1]
+        days = days + day - 1		
+        dezDate = (days*24*60*60+hour*60*60+minute*60+sec)/(365*24*60*60)+year		
+
+    object = {}
+    object['year'] = year
+    object['month'] = month
+    object['day'] = day
+    object['hour'] = hour
+    object['minute'] = minute
+    object['second'] = sec
+    object['doy'] = datetime(year,month,day,0,0,0).strftime('%j')
+    object['date'] = "%04d-%02d-%02d %02d:%02d:%02d" % (year,month,day,hour,minute,sec)
+    object['date_short'] = "%04d%02d%02d%02d%02d%02d" % (year,month,day,hour,minute,sec)
+    return object
