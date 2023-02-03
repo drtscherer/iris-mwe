@@ -1,5 +1,6 @@
 ### Minimum Working Example of Global River Slope Processing for Review Process. ###
-Daniel Scherer, 2023-02-03
+Daniel Scherer, 2023-02-03  
+[![DOI](https://zenodo.org/badge/595097911.svg)](https://zenodo.org/badge/latestdoi/595097911)
 
 Note, that the actual IRIS software depends on the DGFI-TUM internal Multi-Version-Altimetry (MVA) database to access the ICESat-2 data efficiently.
 Due to its size, the MVA database can not be shared.  
