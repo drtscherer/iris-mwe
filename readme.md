@@ -1,4 +1,4 @@
-### Minimum Working Example of Global River Slope Processing for Review Process. ###
+### Minimum Working Example of IRIS Global River Slope Processing ###
 Daniel Scherer, 2023-02-03  
 [![DOI](https://zenodo.org/badge/595097911.svg)](https://zenodo.org/badge/latestdoi/595097911)
 
